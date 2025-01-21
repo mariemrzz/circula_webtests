@@ -1,5 +1,5 @@
 import * as conf from "../configuration/conf"
-const { expect } = require('@playwright/test');
+const { expect, test } = require('@playwright/test');
 
 export class SignUpPage {
     constructor(page) {
@@ -22,8 +22,10 @@ export class SignUpPage {
     }
 
     async goto() {
-        await this.page.goto(conf.HOST + '/users/sign_up');
-        await this.acceptCookiesButton.click();
+        await test.step('Open signup page', async () => {
+            await this.page.goto(conf.HOST + '/users/sign_up');
+            await this.acceptCookiesButton.click();
+        })
     }
 
     async fillAndSubmitStepOne(email, password) {
@@ -32,9 +34,11 @@ export class SignUpPage {
     }
 
     async fillStepOne(email, password) {
-        await this.emailField.fill(email);
-        await this.passwordField.fill(password);
-        await this.termsCheckbox.click({ force: true });
+        await test.step('Fill signup page first step', async () => {
+            await this.emailField.fill(email);
+            await this.passwordField.fill(password);
+            await this.termsCheckbox.click({ force: true });
+        })
     }
 
     async fillAndSubmitStepTwo(firstname, lastname, phonenumber) {
@@ -43,34 +47,44 @@ export class SignUpPage {
     }
 
     async fillStepTwo(firstname, lastname, phonenumber) {
-        await this.firstNameField.fill(firstname);
-        await this.lastNameField.fill(lastname);
-        await this.phoneNumberField.fill(phonenumber);
+        await test.step('Fill signup page second step', async () => {
+            await this.firstNameField.fill(firstname);
+            await this.lastNameField.fill(lastname);
+            await this.phoneNumberField.fill(phonenumber);
+        })
     }
 
     async fillStepThree(companyname, country, channel) {
-        await this.companyNameField.fill(companyname);
-        await this.countryDropdown.click();
+        await test.step('Fill signup page third step', async () => {
+            await this.companyNameField.fill(companyname);
 
-        let countryElement = this.page.getByRole('option', { name: country });
-        await countryElement.scrollIntoViewIfNeeded();
+            await test.step('Select country', async () => {
+                await this.countryDropdown.click();
+                let countryElement = this.page.getByRole('option', { name: country });
+                await countryElement.scrollIntoViewIfNeeded();
 
-        await expect(countryElement).toBeVisible();
-        // below is a workaround for selection of a specific country from a dropdown list, since click() doesn't work
-        await countryElement.evaluate(el => el.click());
-        await expect(countryElement).toBeHidden();
+                await expect(countryElement).toBeVisible();
+                // below is a workaround for selection of a specific country from a dropdown list, since click() doesn't work
+                await countryElement.evaluate(el => el.click());
+                await expect(countryElement).toBeHidden();
+            })
 
-        await this.channelDropdown.click();
-        let channelElement = this.page.getByRole('menuitemradio', { name: channel });
-        await channelElement.scrollIntoViewIfNeeded();
+            await test.step('Select channel', async () => {
+                await this.channelDropdown.click();
+                let channelElement = this.page.getByRole('menuitemradio', { name: channel });
+                await channelElement.scrollIntoViewIfNeeded();
 
-        await expect(channelElement).toBeVisible();
-        await channelElement.check();
-        await expect(channelElement).toBeHidden();
+                await expect(channelElement).toBeVisible();
+                await channelElement.check();
+                await expect(channelElement).toBeHidden();
+            })
+        })
     }
 
     async submitStep() {
-        await this.submitButton.click();
+        await test.step('Submit step', async () => {
+            await this.submitButton.click();
+        })
     }
 }
 

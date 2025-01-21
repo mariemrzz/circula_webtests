@@ -4,7 +4,7 @@ import * as generator from '../framework/helpers/data-generator';
 
 test.describe('Verify "Company Information" signup step', () => {
     let signUpPage;
-    test.beforeEach('fill in the first and second signup steps', async ({ page }) => {
+    test.beforeEach('Fill in the first and second signup steps', async ({ page }) => {
         signUpPage = new SignUpPage(page);
         await signUpPage.goto();
         await signUpPage.fillAndSubmitStepOne(generator.generateUserEmail(), generator.generatePassword());
