@@ -1,0 +1,1 @@
+export const HOST = 'https://circula-qa-challenge.vercel.app'

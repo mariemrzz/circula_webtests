@@ -1,3 +1,4 @@
+import * as conf from "../configuration/conf"
 const { expect } = require('@playwright/test');
 
 export class SignUpPage {
@@ -16,10 +17,12 @@ export class SignUpPage {
         this.channelDropdown = page.locator('//input[@name="hdyhau"]');
 
         this.submitButton = page.locator('//button[@type="submit"]');
+
+        this.successContainer = page.getByTestId('signup-success');
     }
 
     async goto() {
-        await this.page.goto('https://circula-qa-challenge.vercel.app/users/sign_up');
+        await this.page.goto(conf.HOST + '/users/sign_up');
         await this.acceptCookiesButton.click();
     }
 
@@ -48,7 +51,7 @@ export class SignUpPage {
     async fillStepThree(companyname, country, channel) {
         await this.companyNameField.fill(companyname);
         await this.countryDropdown.click();
-    
+
         let countryElement = this.page.getByRole('option', { name: country });
         await countryElement.scrollIntoViewIfNeeded();
 
