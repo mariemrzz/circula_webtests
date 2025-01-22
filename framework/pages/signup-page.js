@@ -18,7 +18,7 @@ export class SignUpPage {
 
         this.submitButton = page.locator('//button[@type="submit"]');
 
-        this.successContainer = page.getByTestId('signup-success');
+        this.signupSuccessContainer = page.getByTestId('signup-success');
     }
 
     async goto() {
@@ -34,10 +34,18 @@ export class SignUpPage {
     }
 
     async fillStepOne(email, password) {
-        await test.step('Fill signup page first step', async () => {
-            await this.emailField.fill(email);
-            await this.passwordField.fill(password);
-            await this.termsCheckbox.click({ force: true });
+        await test.step('Fill in signup page first step', async () => {
+            await test.step('Enter Email', async () => {
+                await this.emailField.fill(email);
+            })
+
+            await test.step('Enter Password', async () => {
+                await this.passwordField.fill(password);
+            })
+
+            await test.step('Check Terms and conditions checkbox', async () => {
+                await this.termsCheckbox.click({ force: true });
+            })
         })
     }
 
@@ -47,18 +55,28 @@ export class SignUpPage {
     }
 
     async fillStepTwo(firstname, lastname, phonenumber) {
-        await test.step('Fill signup page second step', async () => {
-            await this.firstNameField.fill(firstname);
-            await this.lastNameField.fill(lastname);
-            await this.phoneNumberField.fill(phonenumber);
+        await test.step('Fill in signup page second step', async () => {
+            await test.step('Enter First name', async () => {
+                await this.firstNameField.fill(firstname);
+            })
+
+            await test.step('Enter Last name', async () => {
+                await this.lastNameField.fill(lastname);
+            })
+
+            await test.step('Enter Phone number', async () => {
+                await this.phoneNumberField.fill(phonenumber);
+            })
         })
     }
 
     async fillStepThree(companyname, country, channel) {
-        await test.step('Fill signup page third step', async () => {
-            await this.companyNameField.fill(companyname);
+        await test.step('Fill in signup page third step', async () => {
+            await test.step(`Enter Company name  - ${companyname}`, async () => {
+                await this.companyNameField.fill(companyname);
+            })
 
-            await test.step('Select country', async () => {
+            await test.step(`Select country - ${country}`, async () => {
                 await this.countryDropdown.click();
                 let countryElement = this.page.getByRole('option', { name: country });
                 await countryElement.scrollIntoViewIfNeeded();
@@ -69,7 +87,7 @@ export class SignUpPage {
                 await expect(countryElement).toBeHidden();
             })
 
-            await test.step('Select channel', async () => {
+            await test.step('Select channel for "How did you hear about us?"', async () => {
                 await this.channelDropdown.click();
                 let channelElement = this.page.getByRole('menuitemradio', { name: channel });
                 await channelElement.scrollIntoViewIfNeeded();
@@ -84,6 +102,13 @@ export class SignUpPage {
     async submitStep() {
         await test.step('Submit step', async () => {
             await this.submitButton.click();
+        })
+    }
+
+    async searchCountry(input) {
+        await test.step(`Start entering "${input}" in countries dropdown list`, async () => {
+            await this.countryDropdown.click();
+            await this.countryDropdown.fill(input);
         })
     }
 }
